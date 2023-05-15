@@ -11,3 +11,11 @@ public class Main {
         tp.submit("String - 4");
     }
 }
+
+class Monitor {
+    private int id;
+
+    public Monitor(int id) {
+        this.id = id;
+    }
+}

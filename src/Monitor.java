@@ -1,20 +1,15 @@
 public class Monitor {
-    DeadLockPolice police;
+    private DeadLockPolice police;
+    private int id;
+    private int count;
 
-    int id;
-    int count;
-
-    public Monitor(int id) {
+    public Monitor(int id, DeadLockPolice police) {
         this.id = id;
         this.count = 0;
+        this.police = police;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public synchronized void inc(int id) {
-        //Operacoes com police
+    public synchronized void inc(int workerId) {
         while (count == 1) {
             try {
                 wait();
@@ -22,12 +17,13 @@ public class Monitor {
                 throw new RuntimeException(e);
             }
         }
-        this.count++;
-        notifyAll();
+        if (police.allow(this.id, workerId)) {
+            this.count++;
+            notifyAll();
+        }
     }
 
-    public synchronized void dec(int id) {
-        //Operacoes com police
+    public synchronized void dec(int workerId) {
         while (count == 0) {
             try {
                 wait();
@@ -37,10 +33,5 @@ public class Monitor {
         }
         this.count--;
         notifyAll();
-    }
-
-    public void setPolice(DeadLockPolice police) {
-        //Sincronize
-        this.police = police;
     }
 }

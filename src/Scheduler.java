@@ -1,15 +1,14 @@
 import java.util.Random;
-import java.util.random.RandomGenerator;
-
 
 public class Scheduler extends Thread {
     Queue requests;
     Deque tasks[];
     int nThreads;
     boolean isWorking = true;
+    Random random = new Random();
 
     public int searchEmpty() {
-        int threadID = RandomGenerator.getDefault().nextInt(this.nThreads);
+        int threadID = random.nextInt(this.nThreads);
         for (int i = 0; i < this.nThreads; i++) {
             if (this.tasks[threadID].size < 1) {
                 return threadID;
@@ -20,7 +19,7 @@ public class Scheduler extends Thread {
     }
 
     public int searchFull() {
-        int threadID = RandomGenerator.getDefault().nextInt(this.nThreads);
+        int threadID = random.nextInt(this.nThreads);
         for (int i = 0; i < this.nThreads; i++) {
             if (this.tasks[threadID].size > 1) {
                 return threadID;
@@ -29,7 +28,6 @@ public class Scheduler extends Thread {
         }
         return -1;
     }
-
 
     synchronized public boolean workStealing() {
         int threadID_full = searchFull();
@@ -42,7 +40,6 @@ public class Scheduler extends Thread {
         }
         return false;
     }
-
 
     public Scheduler(Queue requests, Deque tasks[]) {
         this.requests = requests;
@@ -67,7 +64,7 @@ public class Scheduler extends Thread {
                 }
                 request = (Request) this.requests.pop();
                 task = new Task(request.getLoad());
-                threadID = RandomGenerator.getDefault().nextInt(this.nThreads);
+                threadID = random.nextInt(this.nThreads);
                 synchronized (this.tasks[threadID]) {
                     this.tasks[threadID].push(task);
                     this.tasks[threadID].notifyAll();

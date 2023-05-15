@@ -1,11 +1,13 @@
 import java.util.HashMap;
 
+
 public class Worker extends Thread{
     int id;
     boolean isWorking = true;
     Deque tasks;
     Monitor resources[];
     HashMap<String, Runnable> instructions;
+
     public Worker(int id, Deque tasks) {
         this.id = id;
         this.tasks = tasks;
